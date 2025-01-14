@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package protobasics04;
+
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/timestamp.proto";
+
+option java_multiple_files = true;
+option java_package = "com.playground.models.protobasics04";
+
+
+message Sample {
+  google.protobuf.Int32Value age = 1;
+  google.protobuf.Timestamp login_time = 2;
+}

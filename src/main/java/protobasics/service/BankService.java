@@ -62,8 +62,8 @@ public class BankService extends BankServiceGrpc.BankServiceImplBase {
         responseObserver.onCompleted();
     }
 
-//    @Override
-//    public StreamObserver<DepositRequest> deposit(StreamObserver<AccountBalance> responseObserver) {
-//        return new DepositRequestHandler(responseObserver);
-//    }
+    @Override
+    public StreamObserver<DepositRequest> deposit(StreamObserver<AccountBalance> responseObserver) {
+        return new DepositRequestHandler(responseObserver);
+    }
 }

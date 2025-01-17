@@ -41,17 +41,13 @@ public class BankService extends BankServiceGrpc.BankServiceImplBase {
 
     @Override
     public void withdraw(WithdrawRequest request, StreamObserver<Money> responseObserver) {
-        /*
-            Ideally we should do some input validation. But we are going to assume only happy path scenarios.
-            Because, in gRPC, there are multiple ways to communicate the error message to the client. It has to be discussed in detail separately.
-            Assumption: account # 1 - 10 & withdraw amount is multiple of $10
-         */
+
         var accountNumber = request.getAccountNumber();
         var requestedAmount = request.getAmount();
         var accountBalance = AccountRepository.getBalance(accountNumber);
 
         if(requestedAmount > accountBalance){
-            responseObserver.onCompleted(); // we will change it to proper error later
+            responseObserver.onCompleted();
             return;
         }
 
@@ -60,6 +56,7 @@ public class BankService extends BankServiceGrpc.BankServiceImplBase {
             responseObserver.onNext(money);
             log.info("money sent {}", money);
             AccountRepository.deductAmount(accountNumber, 10);
+            //  Dont have to deal with error from Thread.sleep
             Uninterruptibles.sleepUninterruptibly(1, TimeUnit.SECONDS);
         }
         responseObserver.onCompleted();

@@ -1,6 +1,6 @@
 package protobasics.common;
 
-import protobasics.unary.BankService;
+import protobasics.service.BankService;
 
 public class Demo {
     public static void main(String[] args) {

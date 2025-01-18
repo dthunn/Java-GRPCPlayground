@@ -6,11 +6,12 @@ import com.playground.test.common.AbstractChannelTest;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import protobasics.common.GrpcServer;
-import protobasics.unary.BankService;
+import protobasics.service.BankService;
+import protobasics.service.TransferService;
 
 public abstract class AbstractTest extends AbstractChannelTest {
 
-    private final GrpcServer grpcServer = GrpcServer.create(new BankService());
+    private final GrpcServer grpcServer = GrpcServer.create(new BankService(), new TransferService());
     protected BankServiceGrpc.BankServiceStub bankStub;
     protected BankServiceGrpc.BankServiceBlockingStub bankBlockingStub;
     protected TransferServiceGrpc.TransferServiceStub transferStub;

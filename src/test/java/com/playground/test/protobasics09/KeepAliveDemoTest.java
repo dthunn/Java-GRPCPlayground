@@ -1,5 +1,6 @@
 package com.playground.test.protobasics09;
 
+import com.google.common.util.concurrent.Uninterruptibles;
 import com.playground.models.protobasics09.BalanceCheckRequest;
 import com.playground.models.protobasics09.BankServiceGrpc;
 import io.grpc.Status;
@@ -13,29 +14,33 @@ import org.slf4j.LoggerFactory;
 import protobasics.common.GrpcServer;
 import protobasics.service.DeadlineBankService;
 
+import java.util.concurrent.TimeUnit;
 
-public class LazyChannelDemoTest extends AbstractTest {
+public class KeepAliveDemoTest extends AbstractTest {
 
-    private static final Logger log = LoggerFactory.getLogger(LazyChannelDemoTest.class);
+    private static final Logger log = LoggerFactory.getLogger(KeepAliveDemoTest.class);
     private final GrpcServer grpcServer = GrpcServer.create(new DeadlineBankService());
     private BankServiceGrpc.BankServiceBlockingStub bankBlockingStub;
 
     @BeforeAll
     public void setup() {
-        //  this.grpcServer.start();
+        this.grpcServer.start();
         this.bankBlockingStub = BankServiceGrpc.newBlockingStub(channel);
     }
 
-    @Test
-    public void lazyChannelDemo() {
-        var ex = Assertions.assertThrows(StatusRuntimeException.class, () -> {
-            var request = BalanceCheckRequest.newBuilder()
-                    .setAccountNumber(1)
-                    .build();
-            var response = this.bankBlockingStub.getAccountBalance(request);
-            log.info("{}", response);
-        });
-        Assertions.assertEquals(Status.Code.UNAVAILABLE, ex.getStatus().getCode());
+    /*
+        Configure the server with keep alive
+     */
+    // @Test
+    public void keepAliveDemo() {
+        var request = BalanceCheckRequest.newBuilder()
+                .setAccountNumber(1)
+                .build();
+        var response = this.bankBlockingStub.getAccountBalance(request);
+        log.info("{}", response);
+
+        // just blocking the thread for 30 seconds
+        Uninterruptibles.sleepUninterruptibly(30, TimeUnit.SECONDS);
     }
 
     @AfterAll

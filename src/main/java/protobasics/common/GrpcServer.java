@@ -4,7 +4,8 @@ import io.grpc.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
+import java.util.Arrays;
+import java.util.function.Consumer;
 
 public class GrpcServer {
     private static final Logger log = LoggerFactory.getLogger(GrpcServer.class);
@@ -20,11 +21,14 @@ public class GrpcServer {
     }
 
     public static GrpcServer create(int port, BindableService... services){
-//        return create(port, builder -> {
-//            Arrays.asList(services).forEach(builder::addService);
-//        });
+        return create(port, builder -> {
+            Arrays.asList(services).forEach(builder::addService);
+        });
+    }
+
+    public static GrpcServer create(int port, Consumer<ServerBuilder<?>> consumer){
         var builder = ServerBuilder.forPort(port);
-        List.of(services).forEach(builder::addService);
+        consumer.accept(builder);
         return new GrpcServer(builder.build());
     }
 
